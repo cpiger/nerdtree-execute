@@ -10,15 +10,27 @@ if exists("g:loaded_nerdtree_shell_exec_menuitem")
 endif
 
 let g:loaded_nerdtree_shell_exec_menuitem = 1
-let s:haskdeinit = system("ps -e") =~ 'kdeinit'
-let s:hasdarwin = system("uname -s") =~ 'Darwin'
+if has("unix")
+    let s:haskdeinit = system("ps -e") =~ 'kdeinit'
+    let s:hasdarwin = system("uname -s") =~ 'Darwin'
+endif
 
 call NERDTreeAddMenuItem({
-      \ 'text': 'e(x)ecute',
-      \ 'shortcut': 'x',
+      \ 'text': '(E)xecute',
+      \ 'shortcut': 'E',
+      \ 'isActiveCallback': '1',
       \ 'callback': 'NERDTreeExecute' })
 
-function! NERDTreeExecute()
+
+call NERDTreeAddKeyMap({
+            \ 'key': 'E',
+            \ 'callback': 'NERDTreeExecute',
+            \ 'quickhelpText': 'open with system default application',
+            \ 'override': '1',
+            \ 'scope': 'Node' })
+
+
+function! NERDTreeExecute(node)
   let l:oldssl=&shellslash
   set noshellslash
   let treenode = g:NERDTreeFileNode.GetSelected()
